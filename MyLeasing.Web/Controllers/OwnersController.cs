@@ -357,5 +357,84 @@ namespace MyLeasing.Web.Controllers
 
 
 
+        //ADD Contrac
+        public async Task<IActionResult> AddContract(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var property = await _datacontext.Properties
+                .Include(p => p.Owner)
+                .FirstOrDefaultAsync(p => p.Id == id.Value);
+            if (property == null)
+            {
+                return NotFound();
+            }
+
+            var model = new ContractViewModel
+            {
+                OwnerId = property.Owner.Id,
+                PropertyId = property.Id,
+                Lessees = _combosHelper.GetComboLessees(),
+                Price = property.Price,
+                StartDate = DateTime.Today,
+                EndDate = DateTime.Today.AddYears(1)
+            };
+            return View(model);
+        }
+
+         [HttpPost]
+        public async Task<IActionResult> AddContract(ContractViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var contract = await _converterHelper.ToContractAsync(model, true);
+                _datacontext.Contracts.Add(contract);
+                await _datacontext.SaveChangesAsync();
+                return RedirectToAction($"{nameof(DetailsProperty)}/{model.PropertyId}");
+            }
+            return View(model);
+        }
+
+        //EDIT CONTRACT
+        public async Task<IActionResult> EditContract(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var contract = await _datacontext.Contracts
+                .Include(p => p.Owner)
+                .Include(p => p.Lessee)
+                .Include(p => p.Property)
+                .FirstOrDefaultAsync(p => p.Id == id.Value);
+            if (contract == null)
+            {
+                return NotFound();
+            }
+
+            return View(_converterHelper.ToContractViewModel(contract));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditContract(ContractViewModel view)
+        {
+            if (ModelState.IsValid)
+            {
+                var contract = await _converterHelper.ToContractAsync(view, false);
+                _dataContext.Contracts.Update(contract);
+                await _dataContext.SaveChangesAsync();
+                return RedirectToAction($"{nameof(DetailsProperty)}/{view.OwnerId}");
+            }
+
+            return View(view);
+        }
+
+
+
+
     }
 }
