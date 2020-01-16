@@ -538,7 +538,7 @@ namespace MyLeasing.Web.Controllers
             return RedirectToAction($"{nameof(Details)}/{property.Owner.Id}");
         }
 
-
+        //Detalles del contrato
         public async Task<IActionResult> DetailsContract(int? id)
         {
             if (id == null)
@@ -546,7 +546,7 @@ namespace MyLeasing.Web.Controllers
                 return NotFound();
             }
 
-            var contract = await _dataContext.Contracts
+            var contract = await _datacontext.Contracts
                 .Include(c => c.Owner)
                 .ThenInclude(o => o.User)
                 .Include(c => c.Lessee)
