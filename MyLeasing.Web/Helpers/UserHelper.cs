@@ -1,42 +1,4 @@
-﻿//using Microsoft.AspNetCore.Identity;
-//using MyLeasing.Web.Data.Entities;
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Threading.Tasks;
-
-//namespace MyLeasing.Web.Helpers
-//{
-//    public class UserHelper : IUserHelper
-//    {
-//        public Task<IdentityResult> AddUserAsync(User user, string password)
-//        {
-//            throw new NotImplementedException();
-//        }
-
-//        public Task AddUserToRoleAsync(User user, string roleName)
-//        {
-//            throw new NotImplementedException();
-//        }
-
-//        public Task CheckRoleAsync(string roleName)
-//        {
-//            throw new NotImplementedException();
-//        }
-
-//        public Task<User> GetUserByEmailAsync(string email)
-//        {
-//            throw new NotImplementedException();
-//        }
-
-//        public Task<bool> IsUserInRoleAsync(User user, string roleName)
-//        {
-//            throw new NotImplementedException();
-//        }
-//    }
-//}
-
-
+﻿
 using Microsoft.AspNetCore.Identity;
 using MyLeasing.Web.Data.Entities;
 using MyLeasing.Web.Models;
@@ -122,8 +84,12 @@ namespace MyLeasing.Web.Helpers
             return await _userManager.UpdateAsync(user);
         }
 
-
-
-
+        public async Task<SignInResult> ValidatePasswordAsync(User user, string password)
+        {
+            return await _signInManager.CheckPasswordSignInAsync(
+                user,
+                password,
+                false);
+        }
     }   
 }

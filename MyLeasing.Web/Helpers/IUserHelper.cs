@@ -25,5 +25,9 @@ namespace MyLeasing.Web.Helpers
 
         Task<IdentityResult> UpdateUserAsync(User user);
 
+
+        //METODOS DE API
+        Task<SignInResult> ValidatePasswordAsync(User user, string password);
+
     }
 }
